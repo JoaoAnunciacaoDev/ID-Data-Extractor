@@ -1,0 +1,10 @@
+# Variáveis de ambiente
+.env
+
+# Arquivos gerados pelo PyInstaller
+build/
+dist/
+*.spec
+
+# Cache do Python
+__pycache__/
