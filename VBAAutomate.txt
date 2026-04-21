@@ -1,0 +1,150 @@
+Sub GerarCarteiras()
+
+    Dim linha As String
+    Dim dados() As String
+    Dim filePath As String
+    Dim basePage As Page
+    Dim newPage As Page
+    Dim contador As Integer
+    
+    filePath = "C:\address.csv"
+    
+    Open filePath For Input As #1
+    
+    ' Pular o cabeçalho do CSV
+    Line Input #1, linha
+
+    ' Salva a página 1 (vazia, com os 10 espaços) como modelo base
+    Set basePage = ActiveDocument.ActivePage
+
+    ' Congela a tela para acelerar o processo e evitar travamentos
+    Optimization = True
+
+    contador = 1
+    
+    ' Cria a primeira página para preencher (copiando os itens da base)
+    Set newPage = ActiveDocument.InsertPagesEx(1, False, ActiveDocument.Pages.Count, basePage.SizeWidth, basePage.SizeHeight)
+    newPage.Activate
+    basePage.Shapes.All.Copy
+    newPage.ActiveLayer.Paste
+
+    Do While Not EOF(1)
+        Line Input #1, linha
+        
+        If Trim(linha) <> "" Then
+            ' ATENÇÃO: Verifique se o seu CSV usa vírgula (",") ou ponto e vírgula (";")
+            dados = Split(linha, ";")
+            
+            If UBound(dados) >= 3 Then
+                Dim foto As String
+                Dim nome As String
+                Dim rg As String
+                Dim data_nascimento As String
+                
+                foto = Trim(dados(0))
+                nome = Trim(dados(1))
+                rg = Trim(dados(2))
+                data_nascimento = Trim(dados(3))
+                
+                ' =========================
+                ' TEXTO - NOME
+                ' =========================
+                Dim shpNome As Shape
+                Dim boxNome As Shape
+                Set shpNome = ActivePage.Shapes.FindShape("spc_nome" & contador)
+                Set boxNome = ActivePage.Shapes.FindShape("box_nome" & contador)
+                
+                If Not shpNome Is Nothing Then
+                    shpNome.Text.Story.Text = nome
+                    shpNome.Text.Story.Alignment = cdrCenterAlignment
+                    
+                    ' Força o centro do texto ir para o centro do retângulo
+                    If Not boxNome Is Nothing Then
+                        shpNome.CenterX = boxNome.CenterX
+                        shpNome.CenterY = boxNome.CenterY
+                    End If
+                End If
+                
+                ' =========================
+                ' TEXTO - CPF/RG
+                ' =========================
+                Dim shpCPF As Shape
+                Dim boxCPF As Shape
+                Set shpCPF = ActivePage.Shapes.FindShape("spc_cpf" & contador)
+                Set boxCPF = ActivePage.Shapes.FindShape("box_cpf" & contador)
+                
+                If Not shpCPF Is Nothing Then
+                    shpCPF.Text.Story.Text = rg
+                    shpCPF.Text.Story.Alignment = cdrCenterAlignment
+                    
+                    If Not boxCPF Is Nothing Then
+                        shpCPF.CenterX = boxCPF.CenterX
+                        shpCPF.CenterY = boxCPF.CenterY
+                    End If
+                End If
+                
+                ' =========================
+                ' TEXTO - DATA
+                ' =========================
+                Dim shpData As Shape
+                Dim boxData As Shape
+                Set shpData = ActivePage.Shapes.FindShape("spc_data_nasc" & contador)
+                Set boxData = ActivePage.Shapes.FindShape("box_data_nasc" & contador)
+                
+                If Not shpData Is Nothing Then
+                    shpData.Text.Story.Text = data_nascimento
+                    shpData.Text.Story.Alignment = cdrCenterAlignment
+                    
+                    If Not boxData Is Nothing Then
+                        shpData.CenterX = boxData.CenterX
+                        shpData.CenterY = boxData.CenterY
+                    End If
+                End If
+                
+                ' =========================
+                ' FOTO COM POWERCLIP
+                ' =========================
+                Dim container As Shape
+                Set container = ActivePage.Shapes.FindShape("spc_foto" & contador)
+                
+                If Not container Is Nothing And foto <> "" Then
+                    If Dir(foto) <> "" Then
+                        ActiveLayer.Import foto
+                        
+                        Dim img As Shape
+                        Set img = ActiveShape
+                        
+                        img.SetSize container.SizeWidth, container.SizeHeight
+                        img.CenterX = container.CenterX
+                        img.CenterY = container.CenterY
+                        img.AddToPowerClip container
+                    End If
+                End If
+                
+                ' =========================
+                ' LÓGICA DE PAGINAÇÃO
+                ' =========================
+                If contador = 10 Then
+                    If Not EOF(1) Then
+                        Set newPage = ActiveDocument.InsertPagesEx(1, False, ActiveDocument.Pages.Count, basePage.SizeWidth, basePage.SizeHeight)
+                        newPage.Activate
+                        basePage.Shapes.All.Copy
+                        newPage.ActiveLayer.Paste
+                        contador = 1
+                    End If
+                Else
+                    contador = contador + 1
+                End If
+            End If
+        End If
+    Loop
+    
+    Close #1
+
+    ' Descongela a tela
+    Optimization = False
+    ActiveWindow.Refresh
+
+    MsgBox "Lote de carteiras gerado com sucesso!"
+
+End Sub
