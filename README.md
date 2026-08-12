@@ -24,10 +24,11 @@ Word → HTML → Parser → Structured Data → Review → CSV
 
 Microsoft Word was used as the original data-entry environment. Instead of attempting to parse the .docx files directly, the workflow exports the documents to HTML, preserving the tabular structure in a format that can be parsed using BeautifulSoup.
 
+Why HTML?
 
-This is a Desktop application developed in Python to automate the extraction of student data from HTML forms (exported from Microsoft Word). The program parses HTML tables, extracts biographical data, locates physical photo paths, and exports everything into a standardized `.csv` file.
+HTML was chosen because the original documents were created in Microsoft Word and exported to HTML. This format makes it easier to extract tables, text, and image paths using BeautifulSoup.
 
-This tool was designed to optimize the workflow for creating student ID cards, allowing direct integration with Print Merge features in software like CorelDraw and Microsoft Excel.
+While .docx support would be a more natural solution and is planned for a future version, HTML was sufficient for the project's original requirements and allowed the solution to be developed within the available timeframe.
 
 ## ✨ Features
 
