@@ -1,5 +1,30 @@
 # 🪪 ID Card Extractor
 
+ID Card Extractor is a Python desktop application created to automate a repetitive workflow involved in generating student ID cards.
+The original workflow required manually transferring student information and photo paths from documents exported from Microsoft Word into a format suitable for bulk printing. This project automates that process by parsing the exported HTML, extracting the relevant information, allowing manual corrections, previewing student photos, and generating a standardized CSV file.
+Although originally developed for a specific real-world workflow, the project is published as a portfolio example of desktop automation, document parsing, data transformation, and GUI development with Python.
+
+## The Problem
+
+Creating student ID cards involved a repetitive manual workflow:
+
+1. Export student forms from Microsoft Word.
+2. Locate student information.
+3. Locate the corresponding photo files.
+4. Manually transfer the information to a spreadsheet.
+5. Correct formatting issues.
+6. Import the resulting data into the printing/design workflow.
+
+When processing many students, this became unnecessarily time-consuming and prone to manual errors.
+
+## The Solution
+ID Card Extractor automates this workflow by:
+
+Word → HTML → Parser → Structured Data → Review → CSV
+
+Microsoft Word was used as the original data-entry environment. Instead of attempting to parse the .docx files directly, the workflow exports the documents to HTML, preserving the tabular structure in a format that can be parsed using BeautifulSoup.
+
+
 This is a Desktop application developed in Python to automate the extraction of student data from HTML forms (exported from Microsoft Word). The program parses HTML tables, extracts biographical data, locates physical photo paths, and exports everything into a standardized `.csv` file.
 
 This tool was designed to optimize the workflow for creating student ID cards, allowing direct integration with Print Merge features in software like CorelDraw and Microsoft Excel.
@@ -21,7 +46,7 @@ This tool was designed to optimize the workflow for creating student ID cards, a
 - **Pillow (PIL)** (Image processing and preview)
 - **PyInstaller** (Executable generation)
 
-## 🚀 How to Use (For End Users)
+## 🚀 How to Use
 
 No Python installation required! If you just want to use the tool:
 1. Go to the [Releases] tab of this repository.
